@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Team - AI Diagnosis</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1E0A2E;
+            color: white;
+            height: 100%;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 100px;
+            background: linear-gradient(135deg, #372865 0%, #0d0117 100%);
+            border-radius: 50px;
+            margin-bottom: 50px;
+        }
+        .logo {
+            font-weight: bold;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            margin-right: 10px;
+        }
+        .logo a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+        nav a:hover, nav a.active {
+            background-color: #4A3A69;
+            border-radius: 5px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .team-single {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .team-member {
+            background: linear-gradient(135deg, #3A1856 0%, #10041c 100%);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            width: 100%;
+        }
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+        .team-member img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+        .team-member h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .team-member p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <a href="HomePg.html">
+                    <img src="Logo.png" alt="Company Logo" width="32" height="32">
+                    AI Diagnosis
+                </a>
+            </div>
+            <nav>
+                <a href="#">Solutions</a>
+                <a href="#">Pricing</a>
+                <a href="TeamsPg.html"  class="active">Team</a>
+                <a href="AboutPg.html">About</a>
+            </nav>            
+        </header>
+        <h1>Our Team</h1>
+        
+        <!-- Single Team Member on top -->
+        <div class="team-single">
+            <div class="team-member">
+                <img src="Team/Ahmed.png" alt="Ahmed Atef">
+                <h3>Ahmed Atef</h3>
+                <p>Developer & Designer</p>
+            </div>
+        </div>
+        
+        <!-- 3x2 Grid Team Members below -->
+        <div class="team-grid">
+            <div class="team-member">
+                <img src="Team/Hossam.jpg" alt="Hossam Mohamed">
+                <h3>Hossam Mohamed</h3>
+                <p>Business Manager</p>
+            </div>
+            <div class="team-member">
+                <img src="Team/Israa.jpg" alt="Esraa Bashir">
+                <h3>Esraa Bashir</h3>
+                <p>Founder</p>
+            </div>
+            <div class="team-member">
+                <img src="Team/Magda.jpg" alt="Magda Atef">
+                <h3>Magda Atef</h3>
+                <p>Operations Specialist</p>
+            </div>
+            <div class="team-member">
+                <img src="Team/Menna.jpg" alt="Menna Allah">
+                <h3>Menna Allah</h3>
+                <p>Product Designer</p>
+            </div>
+            <div class="team-member">
+                <img src="Team/AmrArfa.jpg" alt="Amr Arafa">
+                <h3>Amr Arafa</h3>
+                <p>Operations Specialist</p>
+            </div>
+            <div class="team-member">
+                <img src="Team/Hassan.jpg" alt="Hassan Mohamed">
+                <h3>Hassan Mohamed</h3>
+                <p>Product Designer</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

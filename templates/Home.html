@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Diagnosis - AI-Powered Cancer Diagnosis</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1E0A2E;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+        .logo {
+            font-weight: bold;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            margin-right: 10px;
+            width: 32px;
+            height: 32px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .sign-up {
+            background-color: white;
+            color: #1E0A2E;
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+        }
+        .main-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 50px;
+            background: linear-gradient(135deg, #3A1856 0%, #2D1245 100%);
+            border-radius: 20px;
+            padding: 40px;
+        }
+        .text-content {
+            flex: 1;
+            padding-right: 50px;
+        }
+        .image-content {
+            flex: 1;
+            text-align: right;
+        }
+        .image-content img {
+            max-width: 100%;
+            border-radius: 20px;
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .tag {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .cta-button {
+            background-color: white;
+            color: #1E0A2E;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Company Logo">
+                AI Diagnosis
+            </div>
+            <nav>
+                <a href="{{ url_for('about') }}">About</a>
+                <a href="{{ url_for('team') }}">Team</a>
+                <a href="{{ url_for('solutions') }}">Solutions</a>
+                <a href="{{ url_for('pricing') }}">Pricing</a>
+                <a href="{{ url_for('signup') }}" class="sign-up">Sign up →</a>
+            </nav>
+        </header>
+        <div class="main-content">
+            <div class="text-content">
+                <div class="tag">#EarlyCancerDetection</div>
+                <h1>AI-Powered Cancer Diagnosis</h1>
+                <p>Leverage our cutting-edge AI system to analyze medical images for faster and more accurate early detection of cancer. Empower your healthcare institution with a reliable solution that integrates seamlessly into existing workflows and provides actionable insights in real-time.</p>
+                <a href="{{ url_for('index') }}" class="cta-button">Start free today →</a>
+            </div>
+            <div class="image-content">
+                <img src="{{ url_for('static', filename='images/HomePgImage.png') }}" alt="AI analyzing brain scans">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

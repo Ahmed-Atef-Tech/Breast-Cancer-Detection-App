@@ -1,0 +1,151 @@
+import os
+from flask import Flask, render_template, request, redirect, url_for, flash
+from werkzeug.utils import secure_filename
+from PIL import Image, ImageOps
+import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+app = Flask(__name__)
+app.secret_key = 'some_secret_key'  # needed for flashing messages
+
+# Configure upload folder and allowed extensions
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Ensure the upload folder exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Base path for the dataset
+BASE_PATH = "AI APP"
+
+# Global variables to store our trained models
+model_mammogram = None
+model_ultrasound = None
+models_trained = False
+
+def check_directory_structure():
+    required_dirs = [
+        os.path.join(BASE_PATH, "Mammogram", "train"),
+        os.path.join(BASE_PATH, "Ultrasound", "train")
+    ]
+    missing_dirs = [dir for dir in required_dirs if not os.path.exists(dir)]
+    return missing_dirs
+
+def train_model(model_type):
+    model = Sequential([
+        Conv2D(32, (3, 3), activation='relu', input_shape=(224, 224, 3)),
+        MaxPooling2D(2, 2),
+        Conv2D(64, (3, 3), activation='relu'),
+        MaxPooling2D(2, 2),
+        Conv2D(64, (3, 3), activation='relu'),
+        MaxPooling2D(2, 2),
+        Flatten(),
+        Dense(64, activation='relu'),
+        Dense(1, activation='sigmoid')
+    ])
+
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+    train_datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
+
+    train_dir = os.path.join(BASE_PATH, model_type, 'train')
+    if not os.path.exists(train_dir):
+        raise FileNotFoundError(f"Training directory not found: {train_dir}")
+
+    train_generator = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(224, 224),
+        batch_size=32,
+        class_mode='binary',
+        subset='training'
+    )
+
+    validation_generator = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(224, 224),
+        batch_size=32,
+        class_mode='binary',
+        subset='validation'
+    )
+
+    model.fit(
+        train_generator,
+        steps_per_epoch=train_generator.samples // 32,
+        validation_data=validation_generator,
+        validation_steps=validation_generator.samples // 32,
+        epochs=10
+    )
+
+    return model
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.before_request
+def train_models_if_needed():
+    global model_mammogram, model_ultrasound, models_trained
+    if not models_trained:
+        missing_dirs = check_directory_structure()
+        if missing_dirs:
+            flash(f"Error: The following directories are missing: {', '.join(missing_dirs)}", 'error')
+            return
+
+        try:
+            print("Training Mammogram model...")
+            model_mammogram = train_model("Mammogram")
+            print("Training Ultrasound model...")
+            model_ultrasound = train_model("Ultrasound")
+            print("Models trained successfully!")
+            models_trained = True
+        except Exception as e:
+            flash(f"Error during model training: {str(e)}", 'error')
+
+@app.route('/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part', 'error')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file', 'error')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            return redirect(url_for('result', filename=filename))
+    return render_template('UploadPg.html')
+
+@app.route('/result/<filename>')
+def result(filename):
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    
+    image = Image.open(filepath).convert("RGB")
+    size = (224, 224)
+    image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
+    image_array = np.asarray(image)
+    normalized_image_array = (image_array.astype(np.float32) / 255.0)
+    data = np.expand_dims(normalized_image_array, axis=0)
+    
+    if "mammogram" in filename.lower():
+        prediction = model_mammogram.predict(data)
+        class_names = open(os.path.join(BASE_PATH, "Mammogram", "labels.txt"), "r").readlines()
+    else:
+        prediction = model_ultrasound.predict(data)
+        class_names = open(os.path.join(BASE_PATH, "Ultrasound", "labels.txt"), "r").readlines()
+    
+    index = int(prediction[0][0] > 0.5)
+    class_name = class_names[index].strip()
+    confidence_score = float(prediction[0][0])  # Convert to float for JSON serialization
+    
+    return render_template('simple_result.html', 
+                           image_file=filename,
+                           diagnosis=class_name,
+                           confidence=confidence_score)
+
+if __name__ == '__main__':
+    app.run(debug=True)

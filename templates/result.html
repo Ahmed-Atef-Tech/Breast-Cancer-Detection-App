@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Existing head content -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Diagnosis - AI Diagnosis</title>
+    <style>
+        /* Existing styles remain unchanged */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1E0A2E;
+            color: white;
+            height: 100%;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 100px;
+            background: linear-gradient(135deg, #372865 0%, #0d0117 100%);
+            border-radius: 50px;
+            margin-bottom: 50px;
+        }
+        .logo {
+            font-weight: bold;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            margin-right: 10px;
+            width: 32px;
+            height: 32px;
+        }
+        .logo a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+        nav a:hover, nav a.active {
+            background-color: #4A3A69;
+            border-radius: 5px;
+        }
+        .content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 50px;
+            position: relative;
+        }
+        .image-section {
+            flex: 1;
+            padding-right: 20px;
+        }
+        .image-section img {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+        }
+        .text-section {
+            flex: 1;
+            padding-left: 20px;
+            background-color: rgba(91, 35, 74, 0);
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+        }
+        .text-section h1 {
+            background-color: white;
+            color: #1E0A2E;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-size: 24px;
+            display: inline-block;
+        }
+        .text-section p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-top: 20px;
+        }
+        /* Updated styles for the Download Report button */
+        .download-button {
+            background-color: white;
+            color: #1E0A2E;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px; /* Added margin to move the button below the content */
+            transition: background-color 0.3s ease;
+        }
+        .download-button img {
+            margin-left: 10px;
+            width: 20px;
+            height: 20px;
+        }
+        .download-button:hover {
+            background-color: #45a049;
+        }
+        .text-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    </style>
+    <!-- Include jsPDF library from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Company Logo">
+                    AI Diagnosis
+                </a>
+            </div>
+            <nav>
+                <a href="#" class="active">Solutions</a>
+                <a href="#">Pricing</a>
+                <a href="#">About</a>
+            </nav>
+        </header>
+
+        {% for result in results %}
+        <div class="content" id="contentDiv{{ loop.index }}" style="background: {{ result.background }}">
+            <!-- Image Section -->
+            <div class="image-section">
+                <img id="uploadedImage{{ loop.index }}" src="{{ url_for('static', filename='uploads/' + result.image_filename) }}" alt="Uploaded Medical Image">
+            </div>
+
+            <!-- Text Section -->
+            <div class="text-section">
+                <h1 id="patientInfo{{ loop.index }}">Patient Name: {{ full_name }}<br>Age: {{ age }}</h1>
+                <p id="diagnosisContent{{ loop.index }}"><strong>Diagnosis:</strong> {{ result.description }}</p>
+                <p id="className{{ loop.index }}"><strong>Class:</strong> {{ result.class_name }}</p>
+                <p id="confidenceScore{{ loop.index }}"><strong>Confidence Score:</strong> {{ (result.confidence_score * 100) | round(2) }}%</p>
+                <!-- Updated Download Report Button -->
+                <button class="download-button" onclick="downloadReport({{ loop.index }})">Download
+                    <img src="{{ url_for('static', filename='images/download.png') }}" alt="Download Icon">
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        // Include jsPDF from the CDN
+        const { jsPDF } = window.jspdf;
+
+        function downloadReport(index) {
+            // Get patient info
+            const patientName = "{{ full_name }}";
+            const patientAge = "{{ age }}";
+
+            // Get diagnosis content
+            const diagnosisContent = document.getElementById('diagnosisContent' + index).innerText;
+            const classNameText = document.getElementById('className' + index).innerText;
+            const confidenceScoreText = document.getElementById('confidenceScore' + index).innerText;
+
+            // Get image source
+            const imageElement = document.getElementById('uploadedImage' + index);
+            const imageSrc = imageElement ? imageElement.src : null;
+
+            // Create a new jsPDF instance
+            const doc = new jsPDF();
+
+            // Prepare the content
+            const reportLines = [
+                `Patient Name: ${patientName}`,
+                `Age: ${patientAge}`,
+                diagnosisContent,
+                classNameText,
+                confidenceScoreText,
+                `AI-Powered Cancer Diagnosis`
+            ];
+
+            // Add content to PDF
+            let yPosition = 10;  // Starting Y position for the text
+            const lineHeight = 10; // Space between lines
+
+            reportLines.forEach(line => {
+                // Split the line if it's too long
+                const splitText = doc.splitTextToSize(line, 180);
+                doc.text(splitText, 10, yPosition);
+                yPosition += splitText.length * lineHeight;
+            });
+
+            // Add the image after the content
+            if (imageSrc) {
+                yPosition += 10;  // Add some space between the text and image
+
+                let img = new Image();
+                img.crossOrigin = "Anonymous"; // To avoid CORS issues
+                img.src = imageSrc;
+                img.onload = function() {
+                    doc.addImage(img, 'PNG', 10, yPosition, 100, 100); // Adjusted image position
+                    yPosition += 110; // Move Y position down to avoid overlapping with the image
+                    // Save the PDF
+                    doc.save('Patient_Report.pdf');
+                }
+            } else {
+                // Save the PDF
+                doc.save('Patient_Report.pdf');
+            }
+        }
+    </script>
+</body>
+</html>

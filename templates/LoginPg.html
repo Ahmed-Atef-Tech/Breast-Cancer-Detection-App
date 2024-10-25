@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AI Diagnosis</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1E0A2E;
+            color: white;
+            height: 100%;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 100px;
+            background: linear-gradient(135deg, #372865 0%, #0d0117 100%); /* Gradient added to Navbar */
+            border-radius: 50px;
+            margin-bottom: 50px;
+        }
+        .logo {
+            font-weight: bold;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            margin-right: 10px;
+        }
+        .logo a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+        nav a:hover, nav a.active {
+            background-color: #4A3A69;
+            border-radius: 5px;
+        }
+        .login-form {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: linear-gradient(135deg, #3A1856 0%, #180628 100%);
+            border-radius: 20px;
+            text-align: center;
+        }
+        .login-form input[type="email"],
+        .login-form input[type="password"] {
+            width: calc(100% - 40px); /* Ensures the width of the input stays inside the padding */
+            padding: 15px;
+            margin: 10px auto;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            color: #1E0A2E;
+            display: block; /* Ensures the inputs are centered */
+            box-sizing: border-box;
+        }
+        .login-form button {
+            width: calc(100% - 40px); /* Ensures the width of the button stays inside the padding */
+            padding: 15px;
+            margin-top: 20px;
+            background-color: white;
+            color: #1E0A2E;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .login-form p {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .login-form a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <a href="HomePg.html">
+                    <img src="Logo.png" alt="Company Logo" width="32" height="32">
+                    AI Diagnosis
+                </a>
+            </div>
+            <nav>
+                <a href="AboutPg.html">About</a>
+                <a href="TeamsPg.html">Team</a>
+                <a href="#">Solutions</a>
+                <a href="#">Pricing</a>
+            </nav>
+        </header>
+        <div class="login-form">
+            <h1>Login</h1>
+            <form action="#" method="POST">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="SignupPg.html">Sign up</a></p> <!-- Linked to SignupPg.html -->
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Existing head content -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Medical Images - AI Diagnosis</title>
+    <style>
+        /* Existing styles remain unchanged */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #1E0A2E;
+            color: white;
+            height: 100%;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 100px;
+            background: linear-gradient(135deg, #372865 0%, #0d0117 100%);
+            border-radius: 50px;
+            margin-bottom: 50px;
+        }
+        .logo {
+            font-weight: bold;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            margin-right: 10px;
+            width: 32px;
+            height: 32px;
+        }
+        .logo a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+        nav a:hover, nav a.active {
+            background-color: #4A3A69;
+            border-radius: 5px;
+        }
+        .main-content {
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 40px;
+            background: linear-gradient(135deg, #2D1245 0%, #190629 100%);
+            border-radius: 20px;
+            text-align: center;
+        }
+        .main-content input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            color: #1E0A2E;
+            box-sizing: border-box;
+        }
+        .main-content input[type="number"] {
+            width: 50%;
+            padding: 15px;
+            margin: 10px auto;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            color: #1E0A2E;
+            box-sizing: border-box;
+            display: block;
+        }
+        .main-content p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .upload-button {
+            background-color: white;
+            color: #1E0A2E;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .upload-button img {
+            margin-left: 10px;
+            width: 20px;
+            height: 20px;
+        }
+        /* New styles for loading widget */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(30, 10, 46, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ffffff;
+            border-top: 5px solid #4A3A69;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Additional styles for file inputs */
+        .file-input {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .file-input label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .file-input input[type="file"] {
+            display: block;
+            margin: 0 auto;
+            color: #1E0A2E;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <a href="/">
+                    <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Company Logo">
+                    AI Diagnosis
+                </a>
+            </div>
+            <nav>
+                <a href="#">About</a>
+                <a href="#">Team</a>
+                <a href="#">Solutions</a>
+                <a href="#">Pricing</a>
+            </nav>  
+        </header>
+        <div class="main-content">
+            <form action="/process" method="post" enctype="multipart/form-data">
+                <input type="text" name="fullName" id="fullName" placeholder="Full Name">
+                <input type="number" name="age" id="age" placeholder="Age">
+                <p>Ensure your medical images (mammograms, CT scans, MRIs, etc.) are in an accepted format such as .jpg, .png, .dcm (DICOM), or .pdf.</p>
+                <div class="file-input">
+                    <label for="image1">Mammogram:</label>
+                    <input type="file" name="image1" id="image1" accept="image/*">
+                </div>
+                <div class="file-input">
+                    <label for="image2">Ultrasound:</label>
+                    <input type="file" name="image2" id="image2" accept="image/*">
+                </div>
+                <button type="submit" class="upload-button">Upload
+                    <img src="{{ url_for('static', filename='images/upload.png') }}" alt="Upload Icon">
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script>
+        // Show loading overlay on form submission
+        document.querySelector('form').addEventListener('submit', function() {
+            document.querySelector('.loading-overlay').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
